@@ -68,7 +68,12 @@ public class Main {
 
 					} else {
 						textArea.replaceSelection(">" + selectedText);
-						JFrame Bugger = new JFrame();
+					//	Frames.add(1, new JFrame());
+					//	JFrame newFrame = Frames.get(1);
+							JFrame newFrame = new JFrame();
+						newFrame.setSize(100, 100);
+						newFrame.setVisible(true);
+						
 						
 					}
 
