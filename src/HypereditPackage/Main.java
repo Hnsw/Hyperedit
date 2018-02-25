@@ -3,6 +3,7 @@ package HypereditPackage;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
@@ -41,6 +42,8 @@ public class Main {
 				textArea.setFont(textArea.getFont().deriveFont(size));
 			}
 		});
+		
+		ArrayList<JFrame> Frames = new ArrayList<JFrame>();
 
 		textArea.addCaretListener(new CaretListener() {
 
@@ -65,6 +68,8 @@ public class Main {
 
 					} else {
 						textArea.replaceSelection(">" + selectedText);
+						JFrame Bugger = new JFrame();
+						
 					}
 
 				}
