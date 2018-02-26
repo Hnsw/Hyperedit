@@ -11,16 +11,14 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 
 public class Main {
-	
+
 	static int lengthg;
 	static int markg;
-	
 
 	public static void main(String[] args) {
 
-			
 		JFrame frame = setupFrame(new JFrame("Editor"));
-		
+
 		JButton increaseSize = new JButton("bigger");
 		frame.add(increaseSize);
 		increaseSize.setVisible(true);
@@ -29,15 +27,11 @@ public class Main {
 		frame.add(linkify);
 		linkify.setVisible(true);
 
-		
-		
-
-		
 		JTextPane textArea = new JTextPane();
 		frame.add(textArea);
 		textArea.setPreferredSize(new Dimension(750, 850));
 		textArea.setVisible(true);
-		textArea.setBackground(new Color(255,255,255));
+		textArea.setBackground(new Color(255, 255, 255));
 		float size = textArea.getFont().getSize() + 5.0f;
 		textArea.setFont(textArea.getFont().deriveFont(size));
 
@@ -64,14 +58,12 @@ public class Main {
 						dot = mark;
 						mark = temp;
 					}
-				int	 length = dot - mark;
-				lengthg = length;
-				markg = mark;
+					int length = dot - mark;
+					lengthg = length;
+					markg = mark;
 				}
 			}
 		});
-
-
 
 		linkify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -82,21 +74,27 @@ public class Main {
 					e1.printStackTrace();
 				}
 				if (selectedText.contains("x") == true) {
-
+					for (int i = 0; i < Frames.size(); i++) {
+						JFrame selectedFrame = Frames.get(i);
+						System.out.println(selectedFrame.getTitle());
+						System.out.println(selectedText);
+						if (selectedFrame.getTitle().equals((selectedText.substring(1)))) {
+							selectedFrame.toFront();
+						}
+					}
 				} else if (selectedText.length() != 0) {
 					textArea.replaceSelection("x" + selectedText);
 					Frames.add(new JFrame(selectedText));
-					JFrame newFrame = Frames.get(Frames.size() - 1);
-					newFrame.setSize(200, 400);
-					newFrame.setVisible(true);
+					JFrame newFrame = setupFrame(Frames.get(Frames.size() - 1));
+					newFrame.setSize(new Dimension(800, 500));
+					System.out.println(newFrame.getTitle());
+
 				}
 			}
 		});
 
-		
 		frame.setSize(800, 500);
 	}
-
 
 	private static JFrame setupFrame(JFrame frame) {
 
@@ -110,5 +108,3 @@ public class Main {
 		return frame;
 	}
 }
-
-
