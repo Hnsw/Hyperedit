@@ -11,28 +11,35 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 
 public class Main {
+	
+	static int lengthg;
+	static int markg;
+	
 
 	public static void main(String[] args) {
 
-		JFrame frame = new JFrame("Editor");
-		FlowLayout LayoutManager = new FlowLayout();
-		LayoutManager.setAlignment(FlowLayout.CENTER);
-		frame.setLayout(LayoutManager);
-		Color bgColor = new Color(0, 0, 100);
-		frame.getContentPane().setBackground(bgColor);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 900);
-		frame.setVisible(true);
-
+			
+		JFrame frame = setupFrame(new JFrame("Editor"));
+		
 		JButton increaseSize = new JButton("bigger");
 		frame.add(increaseSize);
 		increaseSize.setVisible(true);
 
+		JButton linkify = new JButton("linkify");
+		frame.add(linkify);
+		linkify.setVisible(true);
+
+		
+		
+
+		
 		JTextPane textArea = new JTextPane();
 		frame.add(textArea);
 		textArea.setPreferredSize(new Dimension(750, 850));
 		textArea.setVisible(true);
-		textArea.setBackground(new Color(10, 255, 255));
+		textArea.setBackground(new Color(255,255,255));
+		float size = textArea.getFont().getSize() + 5.0f;
+		textArea.setFont(textArea.getFont().deriveFont(size));
 
 		increaseSize.addActionListener(new ActionListener() {
 
@@ -42,7 +49,7 @@ public class Main {
 				textArea.setFont(textArea.getFont().deriveFont(size));
 			}
 		});
-		
+
 		ArrayList<JFrame> Frames = new ArrayList<JFrame>();
 
 		textArea.addCaretListener(new CaretListener() {
@@ -57,29 +64,51 @@ public class Main {
 						dot = mark;
 						mark = temp;
 					}
-					int length = dot - mark;
-					String selectedText = "noSelection";
-					try {
-						selectedText = textArea.getText(mark, length);
-					} catch (BadLocationException e1) {
-						e1.printStackTrace();
-					}
-					if (selectedText.contains(">") == true) {
-
-					} else {
-						textArea.replaceSelection(">" + selectedText);
-					//	Frames.add(1, new JFrame());
-					//	JFrame newFrame = Frames.get(1);
-							JFrame newFrame = new JFrame();
-						newFrame.setSize(100, 100);
-						newFrame.setVisible(true);
-						
-						
-					}
-
+				int	 length = dot - mark;
+				lengthg = length;
+				markg = mark;
 				}
 			}
 		});
+
+
+
+		linkify.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedText = "noSelection";
+				try {
+					selectedText = textArea.getText(markg, lengthg);
+				} catch (BadLocationException e1) {
+					e1.printStackTrace();
+				}
+				if (selectedText.contains("x") == true) {
+
+				} else if (selectedText.length() != 0) {
+					textArea.replaceSelection("x" + selectedText);
+					Frames.add(new JFrame(selectedText));
+					JFrame newFrame = Frames.get(Frames.size() - 1);
+					newFrame.setSize(200, 400);
+					newFrame.setVisible(true);
+				}
+			}
+		});
+
+		
+		frame.setSize(800, 500);
 	}
 
+
+	private static JFrame setupFrame(JFrame frame) {
+
+		FlowLayout LayoutManager = new FlowLayout();
+		LayoutManager.setAlignment(FlowLayout.CENTER);
+		frame.setLayout(LayoutManager);
+		Color bgColor = new Color(0, 0, 100);
+		frame.getContentPane().setBackground(bgColor);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		return frame;
+	}
 }
+
+
