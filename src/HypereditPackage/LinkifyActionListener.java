@@ -10,7 +10,7 @@ import javax.swing.JTextPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.text.BadLocationException;
 
-public class LinkifyActionListener implements ActionListener {
+public class LinkifyActionListener implements ActionListener, KeyListener{
 
 	JTextPane thisTextField;
 	CaretEvent coordinateCarrier;
@@ -40,7 +40,25 @@ public class LinkifyActionListener implements ActionListener {
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
-			thisWindow.handleSelection(selectedText);
+			thisWindow.handleSelection(selectedText, mark, dot);
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (e.getKeyCode() == 17) {
+			thisWindow.handleCtrlPress();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
