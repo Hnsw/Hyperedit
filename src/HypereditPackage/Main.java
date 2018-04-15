@@ -6,12 +6,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.text.BadLocationException;
 
 public class Main {
 	static String firstTitle;
+	static JFrame initialFrame = new JFrame("Dokument laden/erstellen");
 
 	public static void main(String[] args) {
 
@@ -116,14 +114,15 @@ public class Main {
 	//
 
 	private static void getFirstTitle(ArrayList<FrameAssociator> Frames) {
-		JFrame initialFrame = new JFrame("Dokument laden/erstellen");
 		FlowLayout LayoutManager = new FlowLayout();
 		LayoutManager.setAlignment(FlowLayout.CENTER);
 		initialFrame.setLayout(LayoutManager);
 		JButton confirm = new JButton("Confirm");
+		JButton load = new JButton("Load");
 		JTextField initialField = new JTextField();
 		initialField.setPreferredSize(new Dimension(200, 100));
-
+		load.addActionListener( new loadButtonActionListener());
+		
 		confirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				firstTitle = initialField.getText();
@@ -136,5 +135,9 @@ public class Main {
 		initialFrame.add(confirm);
 		initialFrame.setVisible(true);
 		initialFrame.setSize(new Dimension(240, 200));
+	}
+	
+	private static void loadingFinished() {
+		initialFrame.dispose();
 	}
 }
