@@ -128,11 +128,14 @@ public class Main {
 				firstTitle = initialField.getText();
 				initialFrame.dispose();
 				Frames.add(new FrameAssociator(firstTitle, Frames));
+				AutoSaveThread autoSaver = new AutoSaveThread(Frames);
+				autoSaver.start();
 			}
 		});
 
 		initialFrame.add(initialField);
 		initialFrame.add(confirm);
+		initialFrame.add(load);
 		initialFrame.setVisible(true);
 		initialFrame.setSize(new Dimension(240, 200));
 	}

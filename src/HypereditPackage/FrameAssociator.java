@@ -29,6 +29,7 @@ public class FrameAssociator {
 	JButton thisLinkify;
 	JButton thisSave;
 	JButton thisSaveAll;
+	JButton thisNormalize;
 	JTextPane thisTextField;
 	CaretEvent currentSelection;
 	ArrayList<FrameAssociator> allFrames;
@@ -36,11 +37,13 @@ public class FrameAssociator {
 	SimpleAttributeSet thisNormal;
 	SimpleAttributeSet thisBold;
 	File thisSavePath;
+	File thisAutoSavePath = null;
 
 	public FrameAssociator(String Title, ArrayList<FrameAssociator> otherFrames) {
 
 		thisFrame = new JFrame(Title);
 		thisBigger = new JButton("Bigger");
+		thisNormalize = new JButton("Normal");
 		thisLinkify = new JButton("Linkify");
 		thisSave = new JButton("Save");
 		thisSaveAll = new JButton("SaveAll");
@@ -48,9 +51,11 @@ public class FrameAssociator {
 		thisTextField = new JTextPane();
 		thisFrame.add(thisSave);
 		thisFrame.add(thisSaveAll);
-		thisFrame.add(thisBigger);
+		thisFrame.add(thisNormalize);
 		thisFrame.add(thisLinkify);
 		thisFrame.add(thisTextField);
+
+		thisNormalize.addActionListener(new NormalizeActionListener(thisTextField, this));
 
 		LinkifyActionListener LinkifyListener = new LinkifyActionListener(thisTextField, this);
 		thisLinkify.addActionListener(LinkifyListener);
@@ -126,24 +131,16 @@ public class FrameAssociator {
 
 	private void replaceTextWithLink(String selectedText, int selStart, int selEnd) {
 		try {
-			System.out.println("length:" + thisTextField.getText().length());
-			System.out.println("selend:" + selEnd);
-			System.out.println("after:" + thisTextField.getText(selEnd, 1));
-//			int insertEnd = selEnd;
-//			if (thisTextField.getText().length() >= selEnd + 1 && thisTextField.getText(selEnd, 1).equals(" ")) {
-//				selEnd++;
-//			}
+			// System.out.println("length:" + thisTextField.getText().length());
+			// System.out.println("selend:" + selEnd);
+			// System.out.println("after:" + thisTextField.getText(selEnd, 1));
 			thisTextField.setSelectionStart(selStart);
 			thisTextField.setSelectionEnd(selEnd);
 			thisTextField.replaceSelection("");
 			thisStyle.insertString(selStart, selectedText, thisBold);
-			if (thisTextField.getText().length() == selEnd ) {
+			if (thisTextField.getText().length() == selEnd) {
 				thisStyle.insertString(selEnd, " ", thisNormal);
 			}
-//			RegularExpression regex = new RegularExpression("[a-Z]");
-//			if (thisTextField.getText().length() >= selEnd + 1 && regex.matches(thisTextField.getText(selEnd, 1))) {
-//				thisStyle.insertString(insertEnd, " ", thisNormal);
-//			}
 
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -185,6 +182,8 @@ public class FrameAssociator {
 
 	public void save(JFileChooser savePath) {
 		thisSavePath = new File(savePath.getSelectedFile().getAbsolutePath() + "\\" + thisFrame.getTitle() + ".rtf");
+		thisAutoSavePath = new File(
+				savePath.getSelectedFile().getAbsolutePath() + "\\" + thisFrame.getTitle() + "_autosave.rtf");
 		try {
 			exportToRtf(thisTextField.getDocument(), thisSavePath);
 		} catch (IOException e) {
@@ -207,10 +206,6 @@ public class FrameAssociator {
 			// replace "Monospaced" by a well-known monospace font
 			rtfContent = rtfContent.replaceAll("Monospaced", "Courier New");
 			final StringBuffer rtfContentBuffer = new StringBuffer(rtfContent);
-			// final int endProlog = rtfContentBuffer.indexOf("\n\n");
-			// // set a good Line Space and no Space Before or Space After each paragraph
-			// rtfContentBuffer.insert(endProlog, "\n\\sl240");
-			// rtfContentBuffer.insert(endProlog, "\n\\sb0\\sa0");
 			rtfContent = rtfContentBuffer.toString();
 		}
 		final FileOutputStream fos = new FileOutputStream(file);
@@ -229,5 +224,29 @@ public class FrameAssociator {
 
 	public void setJTextPaneDoc(Document document) {
 		thisTextField.setDocument(document);
+	}
+
+	public void normalizeSelection(String selectedText, int mark, int dot) {
+		thisTextField.setSelectionStart(mark);
+		thisTextField.setSelectionEnd(dot);
+		thisTextField.replaceSelection("");
+		try {
+			thisStyle.insertString(mark, selectedText, thisNormal);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void saveToDefault() {
+		try {
+			if (thisAutoSavePath != null) {
+				exportToRtf(thisTextField.getDocument(), thisAutoSavePath);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 }

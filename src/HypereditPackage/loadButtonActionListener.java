@@ -6,11 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.swing.JFileChooser;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.rtf.RTFEditorKit;
-
 
 public class loadButtonActionListener implements ActionListener {
 
@@ -24,9 +25,8 @@ public class loadButtonActionListener implements ActionListener {
 			return;
 		}
 		// Need way to get files in folder
-		ArrayList<File> FilesToLoad = new ArrayList<File>();
-		FilesToLoad = getFilesFromPath(chooser.getSelectedFile().getAbsolutePath());
-
+		ArrayList<File> FilesToLoad = new ArrayList<File>(Arrays.asList(chooser.getSelectedFile().listFiles()));
+		AutoSaveThread autoSaver = null;
 		RTFEditorKit loadKit = new RTFEditorKit();
 		for (File file : FilesToLoad) {
 			FileReader fileReader = null;
@@ -35,9 +35,15 @@ public class loadButtonActionListener implements ActionListener {
 				JTextPane LoadPane = new JTextPane();
 				loadKit.read(fileReader, LoadPane.getDocument(), 1);
 				ArrayList<FrameAssociator> allFrames = new ArrayList<FrameAssociator>();
-				FrameAssociator loadedFrameAssociator = new FrameAssociator(file.getName().replaceAll(".rtf", ""), allFrames);
+				FrameAssociator loadedFrameAssociator = new FrameAssociator(file.getName().replaceAll(".rtf", ""),
+						allFrames);
 				loadedFrameAssociator.setJTextPaneDoc(LoadPane.getDocument());
+				loadedFrameAssociator.thisAutoSavePath = new File(file.getAbsolutePath().replaceAll(".rtf", "_autosave.rtf"));
 				allFrames.add(loadedFrameAssociator);
+				if (autoSaver == null) {
+					autoSaver = new AutoSaveThread(allFrames);
+					autoSaver.start();
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -47,10 +53,6 @@ public class loadButtonActionListener implements ActionListener {
 			}
 
 		}
-	}
 
-	private ArrayList<File> getFilesFromPath(String absolutePath) {
-		return null;
 	}
-
 }
