@@ -121,7 +121,10 @@ public class Main {
 		JButton load = new JButton("Load");
 		JTextField initialField = new JTextField();
 		initialField.setPreferredSize(new Dimension(200, 100));
-		load.addActionListener( new loadButtonActionListener());
+		
+		
+		load.addActionListener( new loadButtonActionListener(initialFrame));
+		
 		
 		confirm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -139,8 +142,5 @@ public class Main {
 		initialFrame.setVisible(true);
 		initialFrame.setSize(new Dimension(240, 200));
 	}
-	
-	private static void loadingFinished() {
-		initialFrame.dispose();
-	}
 }
+	

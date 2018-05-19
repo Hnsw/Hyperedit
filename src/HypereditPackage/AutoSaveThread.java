@@ -12,15 +12,22 @@ public class AutoSaveThread extends Thread {
 	}
 
 	public void run() {
-		try {
-			sleep(10000);
-			for (FrameAssociator frameAssociator : activeFrames) {
-				frameAssociator.saveToDefault();
+		while (true) {
+			try {
+				sleep(10000);
+			//	System.out.println("Still alive");
+				for (FrameAssociator frameAssociator : activeFrames) {
+				//	System.out.println(frameAssociator.thisAutoSavePath);
+					frameAssociator.saveToDefault();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
+	}
 
+	public void update(FrameAssociator loadedFrameAssociator) {
+		activeFrames.add(loadedFrameAssociator);
 	}
 
 }

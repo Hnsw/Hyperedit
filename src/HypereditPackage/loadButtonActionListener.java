@@ -9,14 +9,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.rtf.RTFEditorKit;
 
 public class loadButtonActionListener implements ActionListener {
+	JFrame parent;
+	public ArrayList<FrameAssociator> allFrames;
+
+	public loadButtonActionListener(JFrame initialFrame) {
+		parent = initialFrame;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		allFrames = new ArrayList<FrameAssociator>();
 		JFileChooser chooser = new JFileChooser();
 		chooser.setApproveButtonText("Load");
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -29,21 +37,25 @@ public class loadButtonActionListener implements ActionListener {
 		AutoSaveThread autoSaver = null;
 		RTFEditorKit loadKit = new RTFEditorKit();
 		for (File file : FilesToLoad) {
+			if (file.toString().contains("_autosave")) {
+				continue;
+			}
 			FileReader fileReader = null;
 			try {
 				fileReader = new FileReader(file);
 				JTextPane LoadPane = new JTextPane();
 				loadKit.read(fileReader, LoadPane.getDocument(), 1);
-				ArrayList<FrameAssociator> allFrames = new ArrayList<FrameAssociator>();
-				FrameAssociator loadedFrameAssociator = new FrameAssociator(file.getName().replaceAll(".rtf", ""),
-						allFrames);
+				FrameAssociator loadedFrameAssociator = new FrameAssociator(file.getName().replaceAll(".rtf", ""));
 				loadedFrameAssociator.setJTextPaneDoc(LoadPane.getDocument());
-				loadedFrameAssociator.thisAutoSavePath = new File(file.getAbsolutePath().replaceAll(".rtf", "_autosave.rtf"));
+				loadedFrameAssociator.thisAutoSavePath = new File(
+						file.getAbsolutePath().replaceAll(".rtf", "_autosave.rtf"));
+				System.out.println(loadedFrameAssociator.thisAutoSavePath);
 				allFrames.add(loadedFrameAssociator);
 				if (autoSaver == null) {
 					autoSaver = new AutoSaveThread(allFrames);
 					autoSaver.start();
 				}
+		//		autoSaver.update(loadedFrameAssociator);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -53,6 +65,14 @@ public class loadButtonActionListener implements ActionListener {
 			}
 
 		}
-
+		for (FrameAssociator frameAssociator : allFrames) {
+			frameAssociator.allFrames = allFrames;
+		}
+		loadingFinished();
 	}
+
+	public void loadingFinished() {
+		parent.dispose();
+	}
+
 }
