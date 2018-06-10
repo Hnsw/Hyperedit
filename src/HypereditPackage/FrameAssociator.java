@@ -64,7 +64,6 @@ public class FrameAssociator {
 		thisFrame.add(thisMerge);
 		thisFrame.add(thisTextField);
 
-		
 		thisMerge.addActionListener(new mergeActionListener(this));
 
 		thisNormalize.addActionListener(new NormalizeActionListener(thisTextField, this));
@@ -90,7 +89,7 @@ public class FrameAssociator {
 					}
 				}
 				allFrames.remove(closedFrame);
-					System.out.println(closedFrame.thisFrame.getTitle());
+				System.out.println(closedFrame.thisFrame.getTitle());
 			}
 		});
 
@@ -141,7 +140,6 @@ public class FrameAssociator {
 		thisFrame.add(thisMerge);
 		thisFrame.add(thisTextField);
 
-		
 		thisMerge.addActionListener(new mergeActionListener(this));
 
 		thisNormalize.addActionListener(new NormalizeActionListener(thisTextField, this));
@@ -167,7 +165,7 @@ public class FrameAssociator {
 					}
 				}
 				allFrames.remove(closedFrame);
-					System.out.println(closedFrame.thisFrame.getTitle());
+				System.out.println(closedFrame.thisFrame.getTitle());
 			}
 		});
 
@@ -236,13 +234,16 @@ public class FrameAssociator {
 
 	private void replaceTextWithLink(String selectedText, int selStart, int selEnd) {
 		try {
-			// System.out.println("length:" + thisTextField.getText().length());
-			// System.out.println("selend:" + selEnd);
-			// System.out.println("after:" + thisTextField.getText(selEnd, 1));
+			System.out.println("length:" + thisTextField.getText().length());
+			System.out.println("text:" + selectedText);
+			System.out.println("length:" + thisTextField.getText().length());
+			System.out.println("selend:" + selEnd);
+			System.out.println("selstart:" + selStart);
+			System.out.println("after:" + thisTextField.getText(selEnd, 1));
 			thisTextField.setSelectionStart(selStart);
 			thisTextField.setSelectionEnd(selEnd);
 			thisTextField.replaceSelection("");
-			thisStyle.insertString(selStart, selectedText, thisBold);
+			thisTextField.getDocument().insertString(selStart, selectedText, thisBold);
 			if (thisTextField.getText().length() == selEnd) {
 				thisStyle.insertString(selEnd, " ", thisNormal);
 			}
@@ -274,6 +275,7 @@ public class FrameAssociator {
 			return null;
 		}
 		thisSavePath = new File(chooser.getSelectedFile().getAbsolutePath() + "\\" + thisFrame.getTitle() + ".rtf");
+		thisAutoSavePath = new File(chooser.getSelectedFile().getAbsolutePath() + "\\" + thisFrame.getTitle() + "_autosave.rtf");
 		try {
 			exportToRtf(thisTextField.getDocument(), thisSavePath);
 			return chooser;
@@ -287,8 +289,7 @@ public class FrameAssociator {
 
 	public void save(JFileChooser savePath) {
 		thisSavePath = new File(savePath.getSelectedFile().getAbsolutePath() + "\\" + thisFrame.getTitle() + ".rtf");
-		thisAutoSavePath = new File(
-				savePath.getSelectedFile().getAbsolutePath() + "\\" + thisFrame.getTitle() + "_autosave.rtf");
+		thisAutoSavePath = new File(savePath.getSelectedFile().getAbsolutePath() + "\\" + thisFrame.getTitle() + "_autosave.rtf");
 		try {
 			exportToRtf(thisTextField.getDocument(), thisSavePath);
 		} catch (IOException e) {
@@ -354,7 +355,7 @@ public class FrameAssociator {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public ArrayList<FrameAssociator> getAllFrames() {
 		return allFrames;
 	}
